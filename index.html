@@ -10,13 +10,23 @@
     <script src="./js/script.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="input">
-            <input type="text" id="input1" name="horario">
-            <button type="button" onclick="myFunction()">Formatar</button>
-            <p id="result"></p>
+    <div class="out">
+        <h1>Formatador de Horário UFPI</h1>
+        <p>
+            Para transformar esse horário confuso das disciplinas da UFPI em algo que nós, 
+            seres humanos, conseguimos entender, basta escrever o código no campo abaixo e clicar em formatar
+        </p>
+        <div id="input">
+            <input type="text" id="input1" placeholder="Ex: 24T12" name="horario">
         </div>
+        <div>
+            <button type="button" onclick="myFunction()">Formatar</button>
+        </div>
+        
+        <p id="result"></p>
     </div>
+    
+
     
 </body>
 </html>

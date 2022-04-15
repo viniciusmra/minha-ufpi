@@ -1,22 +1,74 @@
-.container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    background: #42D6E7;
-    margin: 0;
-  }
-.input{
+.out {
+    margin: auto;
     border-radius: 10px;
     background: white;
-    width: 40%;
-    height: 50%;
+    width: 410px;
+    height: 250;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    margin-top:100px;
+    padding: 30px;
     text-align: center;
 }
-  
-  body,
-  html {
+h1{
+    text-align: left;
+    font-size: 1.5em;
+    color: #f3aa6f;
+}
+p{
+    text-align: left;
+    font-size: 0.9em;
+    color: #cc828a;
+}
+input{
+    background: #F8EDEE;
+    color: #65292F;
+    border-radius: 3px;
+    border:0;
+    outline:0;
+    height: 30px;
+    width: 100px;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+#input{
+    margin: 10px;
+    margin-top: 30px;
+}
+#result{
+    text-align: center;
+    margin-top: 30px;
+}
+button{
+    background: #CC828A;
+    border:0;
+    outline:0;
+    border-radius: 3px;
+    height: 30px;
+    width: 100px;
+    cursor: pointer;
+    color: white;
+}
+button:hover{
+    background-color: #B74E58; 
+}
+body, html {
+    background: #5ab5d1;
+
     height: 100%;
     margin: 0;
+    font-family: helvetica;
+}
+
+::placeholder {
+    color: #DAA4AA;
+    opacity: 1; /* Firefox */
+  }
+  
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color: #DAA4AA;
+  }
+  
+  ::-ms-input-placeholder { /* Microsoft Edge */
+   color: #DAA4AA;
   }
