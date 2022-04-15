@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: #42D6E7;
+    margin: 0;
+  }
+.input{
+    border-radius: 10px;
+    background: white;
+    width: 40%;
+    height: 50%;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    text-align: center;
+}
+  
+  body,
+  html {
+    height: 100%;
+    margin: 0;
+  }
