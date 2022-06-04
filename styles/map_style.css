@@ -1,0 +1,92 @@
+table {
+    border-spacing: 15px;
+    color: white;
+}
+
+td {
+    
+    background: #457b9d;
+   
+    border-radius: 3px;
+    text-align: center;
+    padding: 0px;
+}
+
+td:hover {
+    background-color: #1a535c !important;
+    cursor: pointer;
+}
+
+body,
+html {
+    background: #073b4c;
+    height: 100%;
+    margin: 0;
+    font-family: helvetica;
+}
+.periodo{
+    vertical-align: middle;
+    font-size: 20px;
+    width: 150px;
+}
+.disciplina{
+    width: 250px;
+    height: 100px;
+    vertical-align: top;
+    position: relative;
+}
+
+.container{
+    padding: 10px;
+    height: 100px;
+    display: flex;      
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+.top{
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+
+}
+.center{
+    font-weight: bold;
+
+}
+.bottom{
+    font-size: 12px;
+}
+
+.button{
+    width: 150px;
+    height: 50px;
+    background-color: #fff;
+}
+.schedule{
+   width: 40%;
+   border-radius: 3px;
+}
+
+.t1{
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+    border-style: solid;
+}
+.t2{
+    width: 150px;
+    background-color: white;
+    border-style: dotted;
+}
+.t3{
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+.t4{
+    width: 150px;
+    height: 50px;
+    background-color: white;
+}
