@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bits MIC</title>
+
+    <link rel="stylesheet" href="./styles/bits_style.css">
+    <script src="./scripts/bits_script.js"></script>
+
+</head>
+<body>
+    <div class="head" id="head">
+        <span>Instrução</span>
+        <span id="instrucao">00000000000000000000000000000000</span>
+        <div>
+            <button>Copiar</button>
+            <button>Resetar</button>
+        </div>
+    </div>
+    <div class="main" id="main">
+        <span>AMUX</span>
+        <div class="container">
+            <div class="bits_separados">
+                <span id="amux">0</span>
+            </div>
+            <div class="selecionadores">
+                <input type="radio" id="select_mbr" name="amux" value="0" onclick=teste(this) checked="checked">
+                <label for="select_mbr">MBR</label><br>
+    
+                <input type="radio" id="select_b" name="amux" value="1" onclick=teste(this)>
+                <label for="select_b">B</label><br> 
+            </div>
+        </div>
+    
+        <span>COND</span>
+        <div class="container">
+            <div class="bits_separados">
+                <span id="cond">00</span>
+            </div>
+            <div class="selecionadores">
+                <input type="radio" id="cond0" name="cond" value="00" onclick=teste(this) checked="checked">
+                <label for="cond0">COND = 0</label><br>
+    
+                <input type="radio" id="cond1" name="cond" value="01" onclick=teste(this)>
+                <label for="cond1">COND = 1</label><br>
+    
+                <input type="radio" id="cond2" name="cond" value="10" onclick=teste(this)>
+                <label for="cond2">COND = 2</label><br> 
+    
+                <input type="radio" id="cond3" name="cond" value="11" onclick=teste(this)>
+                <label for="cond3">COND = 3</label><br> 
+            </div>
+        </div>
+    
+        <span>ALU</span>
+        <div class="container">
+            <div class="bits_separados">
+                <span id="alu">00</span>
+            </div>
+            <div class="selecionadores">
+                <input type="radio" id="alu0" name="alu" value="00" onclick=teste(this) checked="checked">
+                <label for="alu0">A + B</label><br>
+    
+                <input type="radio" id="alu1" name="alu" value="01" onclick=teste(this)>
+                <label for="alu1">A AND B</label><br>
+    
+                <input type="radio" id="alu2" name="alu" value="10" onclick=teste(this)>
+                <label for="alu2">A</label><br>
+    
+                <input type="radio" id="alu3" name="alu" value="11" onclick=teste(this)>
+                <label for="alu3">NOT(A)</label><br> 
+            </div>
+        </div>
+    
+        <span>SH</span>
+        <div class="container">
+            <div class="bits_separados">
+                <span id="sh">00</span>
+            </div>
+            <div class="selecionadores">
+                <input type="radio" id="sh0" name="sh" value="00" onclick=teste(this) checked="checked">
+                <label for="sh0">lshift</label><br>
+    
+                <input type="radio" id="sh1" name="sh" value="01" onclick=teste(this)>
+                <label for="sh1">rshift</label><br>
+    
+                <input type="radio" id="sh2" name="sh" value="10" onclick=teste(this)>
+                <label for="sh2">não desloca</label><br>
+            </div>
+        </div>
+    
+        <span>MBR - MAR - RD - WR</span>
+        <div class="container">
+            <div class="bits_separados">
+                <span id="memoria">0000</span>
+            </div>
+            <div class="selecionadores">
+                <input type="checkbox" id="mbr" name="memoria" value="0" onclick=teste(this)>
+                <label for="mbr">MBR</label><br>
+    
+                <input type="checkbox" id="mar" name="memoria" value="1" onclick=teste(this)>
+                <label for="mar">MAR</label><br>
+    
+                <input type="checkbox" id="rd" name="memoria" value="2" onclick=teste(this)>
+                <label for="rd">RD</label><br>
+    
+                <input type="checkbox" id="wr" name="memoria" value="3" onclick=teste(this)>
+                <label for="wr">WR</label><br>
+            </div>
+        </div>
+    
+        <span>ENC - C</span>
+        <div class="container">
+            <div class="bits_separados">
+                <span id="c_reg">00000</span>
+            </div>
+            <div class="selecionadores">
+                <input type="checkbox" id="enc" name="c_reg" value="0" onclick=c_reg()>
+                <label for="enc">ENC</label><br>
+    
+                <label for="c_reg_select">Registrador:</label>
+                <select name="c_reg" id="c_reg_select" onchange=c_reg()>
+                    <option value="0000">PC</option>
+                    <option value="0001">AC</option>
+                    <option value="0010">SP</option>
+                    <option value="0011">IR</option>
+                    <option value="0100">TIR</option>
+                    <option value="0101">0</option>
+                    <option value="0110">1</option>
+                    <option value="0111">-1</option>
+                    <option value="1000">AM</option>
+                    <option value="1001">BM</option>
+                    <option value="1010">A</option>
+                    <option value="1011">B</option>
+                    <option value="1100">C</option>
+                    <option value="1101">D</option>
+                    <option value="1110">E</option>
+                    <option value="1111">F</option>
+                </select>
+            </div>
+        </div>
+
+        <span>A</span>
+        <div class="container">
+            <div class="bits_separados">
+                <span id="a_reg">0000</span>
+            </div>
+            <div class="selecionadores">
+                <label for="a_reg_select">Registrador:</label>
+                <select name="a_reg" id="a_reg_select" onchange=reg_select(this)>
+                    <option value="0000">PC</option>
+                    <option value="0001">AC</option>
+                    <option value="0010">SP</option>
+                    <option value="0011">IR</option>
+                    <option value="0100">TIR</option>
+                    <option value="0101">0</option>
+                    <option value="0110">1</option>
+                    <option value="0111">-1</option>
+                    <option value="1000">AM</option>
+                    <option value="1001">BM</option>
+                    <option value="1010">A</option>
+                    <option value="1011">B</option>
+                    <option value="1100">C</option>
+                    <option value="1101">D</option>
+                    <option value="1110">E</option>
+                    <option value="1111">F</option>
+                </select>
+            </div>
+        </div> 
+
+        <span>B</span>
+        <div class="container">
+            <div class="bits_separados">
+                <span id="b_reg">0000</span>
+            </div>
+            <div class="selecionadores">
+                <label for="b_reg_select">Registrador:</label>
+                <select name="b_reg" id="b_reg_select" onchange=reg_select(this)>
+                    <option value="0000">PC</option>
+                    <option value="0001">AC</option>
+                    <option value="0010">SP</option>
+                    <option value="0011">IR</option>
+                    <option value="0100">TIR</option>
+                    <option value="0101">0</option>
+                    <option value="0110">1</option>
+                    <option value="0111">-1</option>
+                    <option value="1000">AM</option>
+                    <option value="1001">BM</option>
+                    <option value="1010">A</option>
+                    <option value="1011">B</option>
+                    <option value="1100">C</option>
+                    <option value="1101">D</option>
+                    <option value="1110">E</option>
+                    <option value="1111">F</option>
+                </select>
+            </div>
+        </div>
+
+        <span>ADDR</span>
+        <div class="container">
+            <div class="bits_separados">
+                <span id="addr">00000000</span>
+            </div>
+            <div class="selecionadores">
+                <label for="addr_input">Endereço:</label>
+                <input type="text" id="addr_input"onchange=endereco(this)>
+            </div>
+        </div> 
+
+    </div>
+
+    
+    
+    
+</body>
+</html>
