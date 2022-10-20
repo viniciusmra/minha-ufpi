@@ -38,7 +38,7 @@ function c_reg(){
 
 function reg_select(select){
     document.getElementById(select.name).innerHTML = select.options[select.selectedIndex].value;
-
+    atualizar_instrucao();
 }
 
 function endereco(input){

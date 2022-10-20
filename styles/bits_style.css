@@ -2,16 +2,19 @@ body{
     margin:0;
 }
 
-.container{
-    padding: 10px 0px;
+.bits_opcoes{
     display: flex;
     gap: 10px;
     align-items: stretch;
     justify-content: stretch;
-    margin-bottom: 15px;
 }
-.selecionadores{
-    background-color: white;
+.container{
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+    justify-content: stretch;
+}
+.opcoes{
     
 }
 .bits_separados{
@@ -25,11 +28,11 @@ body{
 }
 
 .main{
-    padding: 10px;
+
     margin-top: 30px
 }
 .head{
-    background-color: #333;
+    background-color: #d4a373;
     position: fixed;
     top: 0;
     padding: 10px;
@@ -41,5 +44,11 @@ body{
     gap: 10px;
     flex-wrap: wrap;
     box-sizing: border-box
-    
+}
+
+#instrucao{
+    background-color: red
+}
+.conjunto_bits{
+    padding: 10px;
 }
