@@ -95,3 +95,13 @@ html {
     height: 50px;
     background-color: white;
 }
+footer{
+    display: flex;
+    gap: 10%;
+    align-items: center;
+    background-color: blue;
+}
+
+#footer_githubIcon{
+    width: 5%;
+}
