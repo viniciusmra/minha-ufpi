@@ -5,43 +5,70 @@ var availableSubjectsSchedule = [];
 
 
 function load() {
-    var periodoMax = 0;
+    var maxSemester = 0;
     for (var i = 0; i < cursos[0].disciplinas.length; i++) {
-        if (cursos[0].disciplinas[i].periodo > periodoMax) {
-            periodoMax = cursos[0].disciplinas[i].periodo;
+        if (cursos[0].disciplinas[i].periodo > maxSemester) {
+            maxSemester = cursos[0].disciplinas[i].periodo;
         };
     }
-    var table = document.getElementById("classTable");
-    for (var i = 1; i <= periodoMax; i++) {
-        var row = document.createElement('tr');  // Create new row
-        var cell = document.createElement('td'); // Create a new cell
-        cell.innerHTML = i + "º perí­odo"; //Set some thing
-        cell.className = "periodo";
-        cell.id = i;
-        row.appendChild(cell);
+    var divCurriculum = document.getElementById("content-divCurriculum");
+    for (var i = 1; i <= maxSemester; i++) {
+        //Crio uma linha
+        var row = document.createElement('div');  // Create new row
+        row.classList.add("content-divCurriculum-row")
+
+        
+        // Crio a div que vai receber o cartão referente ao período
+        let divRowSemester = document.createElement('div');
+        divRowSemester.classList.add("content-divCurriculum-row-divSemester")
+        row.appendChild(divRowSemester);
+
+        // crio o cartão do período
+        var card = document.createElement('div'); // Create a new cell
+        card.innerHTML = `<span>${i}º período</span>`; //Set some thing
+        card.className = "card semester";
+        card.id = i;
+        card.draggable = true
+        divRowSemester.appendChild(card)
+        
+        // crio a div que vai receber os cartões das disciplinas
+        let divSubjects = document.createElement('div');
+        divSubjects.classList.add("content-divCurriculum-row-divSubject")
+        row.appendChild(divSubjects)
+
         for (var j = 0; j < cursos[0].disciplinas.length; j++) {
             if(cursos[0].disciplinas[j].periodo == i){
-                var cell = document.createElement('td');
-                var nome = cursos[0].disciplinas[j].nome;
-                var code = cursos[0].disciplinas[j].codigo;
-                var schedule = cursos[0].disciplinas[j].schedule;
-                var ch = cursos[0].disciplinas[j].cargaHoraria;
-                var pR = formatPrerequisites(code);
-                cell.innerHTML = "<div class=\"container\">" +
+                let card = document.createElement('div');
+                let subjectTitle = cursos[0].disciplinas[j].nome;
+                let subjectCode = cursos[0].disciplinas[j].codigo;
+                let schedule = cursos[0].disciplinas[j].schedule;
+                let ch = cursos[0].disciplinas[j].cargaHoraria;
+                //let pR = formatPrerequisites(code);
+                card.innerHTML = 
+                `<div class="subject-container">
+                    <div class="subject-container-top">${subjectCode} - OBRIGATÓRIA</div>
+                    <div class="subject-container-center">${subjectTitle}</div>
+                    <div class="subject-container-bottom"></div>  
+                </div>`
+                card.draggable = true
+                
+                    /*"<div class=\"container\">" +
                     "<div class=\"top\"><span>" + code + "</span><span class=\"schedule\" id=\""+ code +"schedule\">" + schedule + "</span><span>"+ ch + "h</span></div>" +
                     "<div class=\"center\">"+ nome + "</div>" +
                     "<div class=\"bottom\">"+ pR +"</div></div>"
-                cell.className = "disciplina";
-                cell.id = code;
-                cell.setAttribute("onmouseover","cellMouseHover(this)");
-                cell.setAttribute("onmouseout","cellMouseOut(this)");
-                cell.setAttribute("onclick","cellClick(this)");
-                row.appendChild(cell);
+                    */
+                card.className = "card subject";
+                card.id = subjectCode;
+                card.setAttribute("onmouseover","cellMouseHover(this)");
+                card.setAttribute("onmouseout","cellMouseOut(this)");
+                card.setAttribute("onclick","cellClick(this)");
+                divSubjects.appendChild(card);
             }
         }
 
-        table.appendChild(row); //Add it to row
+        divCurriculum.appendChild(row); //Add it to row
     }
+    setDragAndDrop();
     checkAvailables();
 }
 
@@ -126,7 +153,7 @@ function checkAvailables() {
             }
         }
     }
-    checkSchedule();
+    //checkSchedule();
     
 }
 
@@ -240,6 +267,30 @@ function uncheckSchedule(subject){
     }
 
 }
+function setDragAndDrop(){
+    const draggables = document.querySelectorAll(".subject")
+    const containers = document.querySelectorAll(".content-divCurriculum-row-divSubject")
+    
+    draggables.forEach(draggable =>{
+        draggable.addEventListener('dragstart', () => {
+            draggable.classList.add('dragging')
+            console.log("start") 
+        })
+
+        draggable.addEventListener('dragend', () =>{
+            draggable.classList.remove('dragging')
+        })
+    })
+
+    containers.forEach(container =>{
+        container.addEventListener('dragover', e =>{
+            const draggable = document.querySelector('.dragging')
+            container.appendChild(draggable)
+        })
+    })
+}
+
+
 /*
 let cars = [
     {
