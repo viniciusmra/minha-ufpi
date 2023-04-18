@@ -11,6 +11,7 @@
     <script src="./scripts/map_script.js"></script>
 
     <script src="./data/cursos.js"></script>
+    <script src="./data/subjects.js"></script>
 
 </head>
 
@@ -30,9 +31,36 @@
             </ul>
         </div>
         <div id="content">
-            <div id="content-divCurriculum"></div>
-        </div>
-        
+            <div class="card subject template">
+                <div class="card-subject-top">
+                    <span class="card-subject-code">null</span>
+                    <div class="threedotsButton">
+                        <img id="threedotsImage" draggable="false" src="assets/3dots-icon.svg" alt="">
+                    </div>
+                    
+                </div>
+                <div class="card-subject-center"><span class="card-subject-name">nukll</span></div>
+                <div class="card-subject-bottom"><span class="card-subject-schedule">null</span><span class="card-subject-type">null</span></div>  
+            </div>
+
+            <dialog class="subjectDialog dialog">
+                <div class="dialog-buttonDiv">
+                    <button class="dialog-button">Fechar</button>
+                </div>
+                
+                <p id="title"></p>
+                <hr>
+                <div class="text">
+                    <p>Código: <span class="subjectDialog-code"></span></p>
+                    <p>Tipo: <span class="subjectDialog-type"></span></p>
+                    <p>Período: <span class="subjectDialog-semester"></span></p>
+                    <p>Período atual: <span class="subjectDialog-semester"></span></p>
+                    <p>Pré-requisitos: <span class="subjectDialog-prerequisites"></span></p>
+                    <p>Carga-horária: <span class="subjectDialog-workload"></span></p>
+                    <p>Horário: <span class="subjectDialog-schedule"></span></p>
+                </div>
+                
+            </dialog>
     </main>
     
     <footer>
@@ -41,6 +69,7 @@
         </p>
         <img src="assets/github.svg" alt="Seu ícone clicável" id="footer-githubIcon">
     </footer>
+    
 </body>
 
 </html>
