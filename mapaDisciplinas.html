@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
@@ -11,52 +11,70 @@
     <script src="./scripts/map_script.js"></script>
 
     <script src="./data/cursos.js"></script>
+ 
+    <script src="./data/classes.json"></script>
+    <script src="./data/courses.json"></script>
 
 </head>
 
 <body>
+    <header>
+        teste
+    </header>
+    <main>
+        <div id="teste">
+            <p style="text-align: center; font-size: 30px">Mapa de Disciplinas do curso de Ciência da Computação</p>
+            <ul>
+                <li>O mapa mostra todas as disciplinas obrigatórias e optativas ofertadas em 2023.2</li>
+                <li>Mover o mouse por cima dos cards das disciplinas mostra os pré-requisitos</li>
+                <li>Clicar no card de disciplina marca ela como concluida e desbloqueia as disciplinas seguintes</li>
+                <li>Arrastar um card para outro semestre permite uma melhor organização </li>
+                <li>Funciona melhor no PC</li>
+                <li>As alterações feitas são salvas no LocalStorage</li>
+                <li>Autor: Vinicius Alves</li>
+            </ul>
+        </div>
+        <div id="content">
+            <div class="card subject template">
+                <div class="card-subject-top">
+                    <span class="card-subject-code">null</span>
+                    <div class="threedotsButton">
+                        <img id="threedotsImage" draggable="false" src="assets/3dots-icon.svg" alt="">
+                    </div>
+                    
+                </div>
+                <div class="card-subject-center"><span class="card-subject-name">null</span></div>
+                <div class="card-subject-bottom"><span class="card-subject-schedule">null</span><span class="card-subject-type">null</span></div>  
+            </div>
 
-    <div id="teste">
-        <p style="text-align: center; font-size: 30px">Mapa de Disciplinas do curso de Ciência da Computação</p>
-        <ul>
-            <li>O mapa mostra todas as disciplinas obrigatórias</li>
-            <li>Mover o mouse por cima dos cards das disciplinas mostra os prerequisitos</li>
-            <li>Clicar na disciplina marca ela como concluida e desbloqueia as disciplinas seguintes</li>
-            <li>Funciona melhor no PC</li>
-            <li>Autor: Vinicius Alves</li>
-        </ul>
-        
-    </div>
-
-    <table id="classTable">
-    </table>
+            <dialog class="subjectDialog dialog">
+                <div class="dialog-buttonDiv">
+                    <button class="dialog-button">Fechar</button>
+                </div>
+                
+                <p id="title"></p>
+                <hr>
+                <div class="text">
+                    <p>Código: <span class="subjectDialog-code"></span></p>
+                    <p>Tipo: <span class="subjectDialog-type"></span></p>
+                    <p>Período: <span class="subjectDialog-semester"></span></p>
+                    <p>Período atual: <span class="subjectDialog-semester"></span></p>
+                    <p>Pré-requisitos: <span class="subjectDialog-prerequisites"></span></p>
+                    <p>Carga-horária: <span class="subjectDialog-workload"></span></p>
+                    <p>Horário: <span class="subjectDialog-schedule"></span></p>
+                </div>
+                
+            </dialog>
+    </main>
     <!--
-    <div class="t1">
-        <div class="t2">
-            1o periodo
-        </div>
-        <div class="t3">
-            <div class="t4" id="i1">
-                renato
-            </div>
-            <div class="t4" id="">
-                vinicius
-            </div>
-            <div class="t4" id="">
-                carlos
-            </div>
-            <div class="t4" id="">
-                andré
-            </div>
-            <div class="t4" id="">
-                alberto
-            </div>
-            <div class="t4" id="">
-                alfredo
-            </div>
-        </div>
-    </div>
+    <footer>
+        <p id="footer-text">
+            Autor: Vinícius Alves
+        </p>
+        <img src="assets/github.svg" alt="Seu ícone clicável" id="footer-githubIcon">
+    </footer>
     -->
+    
 </body>
 
 </html>

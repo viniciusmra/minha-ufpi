@@ -1,72 +1,199 @@
+/*TODO
+    - incluir seleção de turmas
+    - melhorar o dialogbox das disciplinas
+    - incluir todas as disciplinas do curso (as optativas que faltam)
+    - incluir local storage
+    - melhorar alguns aspectos visuais
+    - fazer agenda
+
+*/
+
 var preColors = ["#e9476f","#ea7194"];
-var concludedSubjects = [];
+var finishedSubjects = [];
 var availableSubjects = [];
+var semesters = []
+var semestersList = []
+var optatives = []
 var availableSubjectsSchedule = [];
 
+window.onload = load;
 
 function load() {
-    var periodoMax = 0;
-    for (var i = 0; i < cursos[0].disciplinas.length; i++) {
-        if (cursos[0].disciplinas[i].periodo > periodoMax) {
-            periodoMax = cursos[0].disciplinas[i].periodo;
-        };
+    finishedSubjects = JSON.parse(localStorage.getItem('finishedSubjects'));
+    LocalStoareSemestersList = JSON.parse(localStorage.getItem('semestersList'));
+    if(LocalStoareSemestersList != null){
+        semestersList = LocalStoareSemestersList
+        console.log("LocalStoareSemestersList Recuperado");
     }
-    var table = document.getElementById("classTable");
-    for (var i = 1; i <= periodoMax; i++) {
-        var row = document.createElement('tr');  // Create new row
-        var cell = document.createElement('td'); // Create a new cell
-        cell.innerHTML = i + "º perí­odo"; //Set some thing
-        cell.className = "periodo";
-        cell.id = i;
-        row.appendChild(cell);
-        for (var j = 0; j < cursos[0].disciplinas.length; j++) {
-            if(cursos[0].disciplinas[j].periodo == i){
-                var cell = document.createElement('td');
-                var nome = cursos[0].disciplinas[j].nome;
-                var code = cursos[0].disciplinas[j].codigo;
-                var schedule = cursos[0].disciplinas[j].schedule;
-                var ch = cursos[0].disciplinas[j].cargaHoraria;
-                var pR = formatPrerequisites(code);
-                cell.innerHTML = "<div class=\"container\">" +
-                    "<div class=\"top\"><span>" + code + "</span><span class=\"schedule\" id=\""+ code +"schedule\">" + schedule + "</span><span>"+ ch + "h</span></div>" +
-                    "<div class=\"center\">"+ nome + "</div>" +
-                    "<div class=\"bottom\">"+ pR +"</div></div>"
-                cell.className = "disciplina";
-                cell.id = code;
-                cell.setAttribute("onmouseover","cellMouseHover(this)");
-                cell.setAttribute("onmouseout","cellMouseOut(this)");
-                cell.setAttribute("onclick","cellClick(this)");
-                row.appendChild(cell);
-            }
-        }
+    currentCenter = 'CCN - CENTRO DE CIENCIAS DA NATUREZA'
+    currentCourse = 'CIÊNCIA DA COMPUTAÇÃO'
+    currentSemester = '2023.2'
 
-        table.appendChild(row); //Add it to row
+    courseData = courses[currentCenter][currentCourse];
+    subjects = courseData.subjects
+
+    courseClasses = classes[currentSemester][currentCourse];
+
+    var maxSemester = 0;
+    for (var i = 0; i < subjects.length; i++) {
+        if(subjects[i].semester > maxSemester) {
+            maxSemester = subjects[i].semester
+        }
     }
+    var content = document.getElementById("content");
+
+    //
+    if(semestersList.length  == 0){
+        for (let index = 0; index <= maxSemester; index++) {
+            semestersList.push([])
+        }
+        subjects.forEach((subject) =>{
+            if(subject.type == "OPTATIVA"){
+                semestersList[0].push(subject.code)
+            } else{
+                semestersList[subject.semester].push(subject.code)
+            }
+            
+        })
+    }
+    
+    //
+
+
+    for (var i = 1; i <= maxSemester; i++) {
+        //semesters.push([])
+        //Crio uma linha
+        createRow(i)
+    }
+    createRow(0)
+
+    //createRow("OPTATIVAS")
+    document.querySelector('.dialog-button').addEventListener('click', function() {
+        
+        document.querySelector('.dialog').close();
+    });
+    setDragAndDrop();
     checkAvailables();
+    localStorage.setItem('semestersList', JSON.stringify(semestersList));
+    console.log(semestersList)
 }
 
-function cellMouseHover(element){
-    var code = element.id;
-    showPrerequisites(code);
-}
-function showPrerequisites(code){
-    var subject = getSubject(code);
-    if(subject != null){
-        for(var i = 0; i < subject.preRequisitos.length; i++){
-            cell = document.getElementById(subject.preRequisitos[i]);
-            if(cell != null){
-                if(concludedSubjects.indexOf(getSubject(subject.preRequisitos[i])) < 0){
-                    cell.style.background = "#e9476f";
-                }else{
-                    cell.style.background = "#1eaf7b";
-                }
-                
-            }
-            //document.getElementById(subject.preRequisitos[i]).style.background = "#e9476f";
-            //showPrerequisites(subject.preRequisitos[i]);
-        }
+function createRow(semester){
+    var row = document.createElement('div');  // Create new row
+    row.classList.add("content-row")
+
+    // Crio a div que vai receber o cartão referente ao período
+    let divRowSemester = document.createElement('div');
+    divRowSemester.classList.add("content-row-divSemester")
+    row.appendChild(divRowSemester);
+
+    // crio o cartão do período
+    var card = document.createElement('div'); // Create a new cell
+    //if(semester == "OPTATIVAS"){
+    if(semester == 0){
+        card.innerHTML = `<span>OPTATIVAS</span>`; //Set some thing
+    } else{
+        card.innerHTML = `<span>${semester}º período</span>`; //Set some thing
     }
+    card.className = "card semester";
+    card.id = semester;
+    card.draggable = false
+    divRowSemester.appendChild(card)
+    
+    // crio a div que vai receber os cartões das disciplinas
+    let divSubjects = document.createElement('div');
+    divSubjects.classList.add("content-row-divSubject")
+    divSubjects.dataset.semester = semester
+    row.appendChild(divSubjects)
+
+    // if(semester == 0){
+    //     subjects.forEach(function(subject){
+    //         if(subject.type == "OPTATIVA"){
+    //             const card = createCard(subject, semester)
+    //             divSubjects.appendChild(card);
+    //         }
+
+    //     })
+    // }else{
+    //     // for (var j = 0; j < subjects.length; j++) {
+    //     //     if(subjects[j].semester == semester && subjects[j].type == "OBRIGATÓRIA"){
+    //     //         const card = createCard(subjects[j], semester)
+    //     //         divSubjects.appendChild(card);
+    //     //     }
+    //     // }
+    //     // 
+        semestersList[semester].forEach(function(code) {
+            const card = createCard(getSubject(code), semester)
+            divSubjects.appendChild(card);
+        });
+    //}
+    
+
+    content.appendChild(row); //Add it to row
 }
+
+function createCard(subject, semester){
+    if(semester == "OPTATIVAS"){
+        optatives.push(subject.code)
+    } else{
+        //semesters[semester-1].push(subject.code)
+    }
+    
+    const template = document.querySelector(".subject.template")
+
+    let card = template.cloneNode(true)
+
+    card.querySelector(".card-subject-code").innerHTML = subject.code
+    card.querySelector(".card-subject-type").innerHTML = subject.type
+    card.querySelector(".card-subject-name").innerHTML = subject.name
+    if(subject.code in courseClasses){
+        card.querySelector(".card-subject-schedule").innerHTML = courseClasses[subject.code][Object.keys(courseClasses[subject.code])[1]].schedule
+    } else{
+        card.querySelector(".card-subject-schedule").innerHTML = ""
+    }
+
+
+    card.classList.add("card")
+    card.classList.add("subject")
+    //////////////////////////////////////////
+    if(finishedSubjects.includes(subject.code)){
+        card.classList.add("finished")
+    } else{
+        card.classList.add("unfinished")
+    }
+    
+    
+    card.classList.add("locked")
+    card.classList.remove("template");
+    card.dataset.semester = semester
+    
+    card.draggable = true;
+    card.id = subject.code;
+
+    card.addEventListener("mouseover", function() {
+        const subject = getSubject(this.id)
+        subject.prerequisites.forEach(function(prerequisite){
+            const prerequisiteCard = document.getElementById(prerequisite)
+            prerequisiteCard.classList.add("prerequisite")
+        })
+    })
+    card.addEventListener("mouseout", function(event) {
+        const subject = getSubject(this.id)
+        subject.prerequisites.forEach(function(prerequisite){
+            const prerequisiteCard = document.getElementById(prerequisite)
+            prerequisiteCard.classList.remove("prerequisite")
+        })
+    })
+    card.setAttribute("onclick","cellClick(this)");
+
+
+    card.querySelector(".threedotsButton").classList.add("subject")
+    card.querySelector(".threedotsButton").setAttribute("onclick","openDialog(event, this)")
+
+    return card
+    
+}
+
 
 function cellMouseOut(element){
     var code = element.id;
@@ -77,66 +204,65 @@ function hidePrerequisites(code){
     var subject = getSubject(code);
     if(subject != null){
         for(var i = 0; i < subject.preRequisitos.length; i++){
-            if(concludedSubjects.indexOf(getSubject(subject.preRequisitos[i])) < 0){
-                document.getElementById(subject.preRequisitos[i]).style.background="";
+            if(finishedSubjects.indexOf(getSubject(subject.prerequisites[i])) < 0){
+                document.getElementById(subject.prerequisites[i]).style.background="";
             } else{
-                document.getElementById(subject.preRequisitos[i]).style.background="#06d6a0";
+                document.getElementById(subject.prerequisites[i]).style.background="#06d6a0";
             }
         }
     }
 }
 
+
 function cellClick(element){
-    if(concludedSubjects.indexOf(getSubject(element.id)) < 0){
-        //alert(element.style.background)
-        element.style.background = "#06d6a0";
-        //uncheckSchedule(getSubject(element.id));
-        concludedSubjects.push(getSubject(element.id));
-    } else{
-        //alert("out")
-        element.style.background = "#457b9d";
-        concludedSubjects.splice(concludedSubjects.indexOf(getSubject(element.id)),1);
+    const code = element.id
+    if(finishedSubjects.includes(code)){
+        element.classList.add('unfinished')
+        element.classList.remove('finished')
+        finishedSubjects.splice(finishedSubjects.indexOf(code),1);
+        localStorage.setItem('finishedSubjects', JSON.stringify(finishedSubjects));
+    }else{
+        element.classList.remove('unfinished')
+        element.classList.add('finished')
+        finishedSubjects.push(code);
+        localStorage.setItem('finishedSubjects', JSON.stringify(finishedSubjects));
     }
-    //alert(concludedSubjects.length);
     checkAvailables();
 }
 
 // Percorre a lista de disciplinas desbloqueadas e muda a cor das disciplinas disponíveis
 function checkAvailables() {
     availableSubjects = [];
-    for (var i = 0; i < cursos[0].disciplinas.length; i++) {
-        var subject = cursos[0].disciplinas[i];
-        if (concludedSubjects.indexOf(subject) < 0) {
-            var flag = true;
-            for (var j = 0; j < subject.preRequisitos.length; j++) {
-                if (concludedSubjects.indexOf(getSubject(subject.preRequisitos[j])) < 0) {
-                    flag = false;
+    subjects.forEach(function(subject){
+        let flag = true
+        //if(!finishedSubjects.includes(subject.code)){
+            subject.prerequisites.forEach(function(prerequisite){
+                if(!finishedSubjects.includes(prerequisite)){
+                    flag = false
                 }
+            })
+            const card = document.getElementById(`${subject.code}`)
+            //se a flag == true, a disciplina está desbloqueado
+            if(flag){  
+                card.classList.remove("locked")
+                card.classList.add("unlocked")
+                availableSubjects.push(subject.code);
+            } else{
+                card.classList.add("locked")
+                card.classList.remove("unlocked")
             }
-            // Se todos os pre-requisitos ja foram concluidos
-            if (flag) {
-                document.getElementById(subject.codigo).style.background = "#118ab2"
-                //checkSchedule(subject);
-                availableSubjects.push(subject);
-            
-            // Se falta algum dos prre-requisitos não tiver sido concluido
-            } else {
-                document.getElementById(subject.codigo).style.background = "#457b9d"
-                //uncheckSchedule(subject);
-            }
-        }
-    }
-    checkSchedule();
-    
+        //}
+    })
+    //console.log(availableSubjects)   
 }
 
-window.onload = load;
+
 
 // Essa funÃ§Ã£o recebe um cÃ³digo de disciplina e retorna a disciplina
 function getSubject(code){
-    for(var i = 0; i < cursos[0].disciplinas.length; i++){
-        if(cursos[0].disciplinas[i].codigo == code){
-            return cursos[0].disciplinas[i];
+    for(var i = 0; i < subjects.length; i++){
+        if(subjects[i].code == code){
+            return subjects[i];
         }
     }
     return null;
@@ -148,12 +274,12 @@ function formatPrerequisites(code){
     var subject = getSubject(code);
     var formatted = "";
     if(subject != null){
-        if(subject.preRequisitos.length > 0){
-            for(var i = 0; i < subject.preRequisitos.length; i++){
+        if(subject.prerequisites.length > 0){
+            for(var i = 0; i < subject.prerequisites.length; i++){
                 if(i == 0){
                     formatted = subject.preRequisitos[i];
                 } else{
-                    formatted = formatted + "; " + subject.preRequisitos[i];
+                    formatted = formatted + "; " + subject.prerequisites[i];
                 }
             }
         }
@@ -189,12 +315,12 @@ function AvailableClick(element){
     document.getElementById(preRequisiteButton).style.background = "";
 }
 function checkSchedule(){
-    for(var i = 0; i < concludedSubjects.length; i++){
-        document.getElementById(concludedSubjects[i].codigo + "schedule").style.background = "";
+    for(var i = 0; i < finishedSubjects.length; i++){
+        document.getElementById(finishedSubjects[i].codigo + "schedule").style.background = "";
     }
     
     var flag;
-    console.log(availableSubjects);
+    //console.log(availableSubjects);
     for (var i = 0; i < cursos[0].disciplinas.length; i++) {
         flag = true;
         for (var j = 0; j < availableSubjects.length; j++) {
@@ -240,6 +366,44 @@ function uncheckSchedule(subject){
     }
 
 }
+function setDragAndDrop(){
+    const draggables = document.querySelectorAll(".subject")
+    const containers = document.querySelectorAll(".content-row-divSubject")
+    
+    draggables.forEach(draggable =>{
+        draggable.addEventListener('dragstart', () => {
+            draggable.classList.add('dragging')
+            const semesterNumber = draggable.dataset.semester
+            //console.log(semesters[semesterNumber-1])
+            //semesters[semesterNumber-1].splice(semesters[draggable.dataset.semester-1].indexOf(draggable.id),1)
+            semestersList[semesterNumber].splice(semestersList[draggable.dataset.semester].indexOf(draggable.id),1)
+            localStorage.setItem('semestersList', JSON.stringify(semestersList));
+        })
+
+        draggable.addEventListener('dragend', () =>{
+            draggable.classList.remove('dragging')
+            const semesterNumber = draggable.dataset.semester
+            //semesters[semesterNumber-1].push(draggable.id)
+            semestersList[semesterNumber].push(draggable.id)
+            localStorage.setItem('semestersList', JSON.stringify(semestersList));
+            console.log(semestersList)
+        })
+    })
+
+    containers.forEach(container =>{
+        container.addEventListener('dragover', e =>{
+            e.preventDefault()
+            const draggable = document.querySelector('.dragging')
+            //
+            container.appendChild(draggable)
+            draggable.dataset.semester = container.dataset.semester
+            //console.log()
+
+        })
+    })
+}
+
+
 /*
 let cars = [
     {
@@ -276,3 +440,30 @@ function trclick() {
     table.appendChild(row); //Add it to row
 }*/
  //118ab2
+
+ function openDialog(event, object){
+    event.stopPropagation()
+    if(object.classList.contains('subject')){
+        const subject = getSubject(object.parentNode.parentNode.id)
+
+        const dialog = document.querySelector(".subjectDialog")//document.createElement('dialog');
+        dialog.querySelector('#title').innerHTML = subject.name
+
+        dialog.querySelector('.subjectDialog-code').innerHTML = subject.code
+        dialog.querySelector('.subjectDialog-type').innerHTML = subject.type
+        dialog.querySelector('.subjectDialog-semester').innerHTML = subject.semester
+        dialog.querySelector('.subjectDialog-prerequisites').innerHTML = subject.prerequisites
+        dialog.querySelector('.subjectDialog-workload').innerHTML = subject.workload
+        dialog.querySelector('.subjectDialog-schedule').innerHTML = subject.schedule
+    
+
+
+        dialog.showModal()
+
+    } else{
+
+    }
+
+
+    
+ }
