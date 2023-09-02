@@ -11,7 +11,9 @@
     <script src="./scripts/map_script.js"></script>
 
     <script src="./data/cursos.js"></script>
-    <script src="./data/subjects.js"></script>
+ 
+    <script src="./data/classes.json"></script>
+    <script src="./data/courses.json"></script>
 
 </head>
 
@@ -23,10 +25,12 @@
         <div id="teste">
             <p style="text-align: center; font-size: 30px">Mapa de Disciplinas do curso de Ciência da Computação</p>
             <ul>
-                <li>O mapa mostra todas as disciplinas obrigatórias</li>
-                <li>Mover o mouse por cima dos cards das disciplinas mostra os prerequisitos</li>
-                <li>Clicar na disciplina marca ela como concluida e desbloqueia as disciplinas seguintes</li>
+                <li>O mapa mostra todas as disciplinas obrigatórias e optativas ofertadas em 2023.2</li>
+                <li>Mover o mouse por cima dos cards das disciplinas mostra os pré-requisitos</li>
+                <li>Clicar no card de disciplina marca ela como concluida e desbloqueia as disciplinas seguintes</li>
+                <li>Arrastar um card para outro semestre permite uma melhor organização </li>
                 <li>Funciona melhor no PC</li>
+                <li>As alterações feitas são salvas no LocalStorage</li>
                 <li>Autor: Vinicius Alves</li>
             </ul>
         </div>
@@ -39,7 +43,7 @@
                     </div>
                     
                 </div>
-                <div class="card-subject-center"><span class="card-subject-name">nukll</span></div>
+                <div class="card-subject-center"><span class="card-subject-name">null</span></div>
                 <div class="card-subject-bottom"><span class="card-subject-schedule">null</span><span class="card-subject-type">null</span></div>  
             </div>
 
@@ -62,13 +66,14 @@
                 
             </dialog>
     </main>
-    
+    <!--
     <footer>
         <p id="footer-text">
             Autor: Vinícius Alves
         </p>
         <img src="assets/github.svg" alt="Seu ícone clicável" id="footer-githubIcon">
     </footer>
+    -->
     
 </body>
 

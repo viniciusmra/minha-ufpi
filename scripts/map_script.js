@@ -1,13 +1,39 @@
+/*TODO
+    - incluir seleção de turmas
+    - melhorar o dialogbox das disciplinas
+    - incluir todas as disciplinas do curso (as optativas que faltam)
+    - incluir local storage
+    - melhorar alguns aspectos visuais
+    - fazer agenda
+
+*/
+
 var preColors = ["#e9476f","#ea7194"];
 var finishedSubjects = [];
 var availableSubjects = [];
 var semesters = []
+var semestersList = []
 var optatives = []
 var availableSubjectsSchedule = [];
 
 window.onload = load;
 
 function load() {
+    finishedSubjects = JSON.parse(localStorage.getItem('finishedSubjects'));
+    LocalStoareSemestersList = JSON.parse(localStorage.getItem('semestersList'));
+    if(LocalStoareSemestersList != null){
+        semestersList = LocalStoareSemestersList
+        console.log("LocalStoareSemestersList Recuperado");
+    }
+    currentCenter = 'CCN - CENTRO DE CIENCIAS DA NATUREZA'
+    currentCourse = 'CIÊNCIA DA COMPUTAÇÃO'
+    currentSemester = '2023.2'
+
+    courseData = courses[currentCenter][currentCourse];
+    subjects = courseData.subjects
+
+    courseClasses = classes[currentSemester][currentCourse];
+
     var maxSemester = 0;
     for (var i = 0; i < subjects.length; i++) {
         if(subjects[i].semester > maxSemester) {
@@ -15,19 +41,41 @@ function load() {
         }
     }
     var content = document.getElementById("content");
+
+    //
+    if(semestersList.length  == 0){
+        for (let index = 0; index <= maxSemester; index++) {
+            semestersList.push([])
+        }
+        subjects.forEach((subject) =>{
+            if(subject.type == "OPTATIVA"){
+                semestersList[0].push(subject.code)
+            } else{
+                semestersList[subject.semester].push(subject.code)
+            }
+            
+        })
+    }
+    
+    //
+
+
     for (var i = 1; i <= maxSemester; i++) {
-        semesters.push([])
+        //semesters.push([])
         //Crio uma linha
         createRow(i)
     }
-    createRow("OPTATIVAS")
+    createRow(0)
+
+    //createRow("OPTATIVAS")
     document.querySelector('.dialog-button').addEventListener('click', function() {
         
         document.querySelector('.dialog').close();
     });
     setDragAndDrop();
     checkAvailables();
-    console.log(semesters)
+    localStorage.setItem('semestersList', JSON.stringify(semestersList));
+    console.log(semestersList)
 }
 
 function createRow(semester){
@@ -41,14 +89,15 @@ function createRow(semester){
 
     // crio o cartão do período
     var card = document.createElement('div'); // Create a new cell
-    if(semester == "OPTATIVAS"){
-        card.innerHTML = `<span>${semester}</span>`; //Set some thing
+    //if(semester == "OPTATIVAS"){
+    if(semester == 0){
+        card.innerHTML = `<span>OPTATIVAS</span>`; //Set some thing
     } else{
         card.innerHTML = `<span>${semester}º período</span>`; //Set some thing
     }
     card.className = "card semester";
     card.id = semester;
-    card.draggable = true
+    card.draggable = false
     divRowSemester.appendChild(card)
     
     // crio a div que vai receber os cartões das disciplinas
@@ -57,22 +106,27 @@ function createRow(semester){
     divSubjects.dataset.semester = semester
     row.appendChild(divSubjects)
 
-    if(semester == "OPTATIVAS"){
-        subjects.forEach(function(subject){
-            if(subject.type == "OPTATIVA"){
-                const card = createCard(subject, semester)
-                divSubjects.appendChild(card);
-            }
+    // if(semester == 0){
+    //     subjects.forEach(function(subject){
+    //         if(subject.type == "OPTATIVA"){
+    //             const card = createCard(subject, semester)
+    //             divSubjects.appendChild(card);
+    //         }
 
-        })
-    }else{
-        for (var j = 0; j < subjects.length; j++) {
-            if(subjects[j].semester == semester && subjects[j].type == "OBRIGATÓRIA"){
-                const card = createCard(subjects[j], semester)
-                divSubjects.appendChild(card);
-            }
-        }
-    }
+    //     })
+    // }else{
+    //     // for (var j = 0; j < subjects.length; j++) {
+    //     //     if(subjects[j].semester == semester && subjects[j].type == "OBRIGATÓRIA"){
+    //     //         const card = createCard(subjects[j], semester)
+    //     //         divSubjects.appendChild(card);
+    //     //     }
+    //     // }
+    //     // 
+        semestersList[semester].forEach(function(code) {
+            const card = createCard(getSubject(code), semester)
+            divSubjects.appendChild(card);
+        });
+    //}
     
 
     content.appendChild(row); //Add it to row
@@ -82,7 +136,7 @@ function createCard(subject, semester){
     if(semester == "OPTATIVAS"){
         optatives.push(subject.code)
     } else{
-        semesters[semester-1].push(subject.code)
+        //semesters[semester-1].push(subject.code)
     }
     
     const template = document.querySelector(".subject.template")
@@ -92,12 +146,23 @@ function createCard(subject, semester){
     card.querySelector(".card-subject-code").innerHTML = subject.code
     card.querySelector(".card-subject-type").innerHTML = subject.type
     card.querySelector(".card-subject-name").innerHTML = subject.name
-    card.querySelector(".card-subject-schedule").innerHTML = subject.schedule
+    if(subject.code in courseClasses){
+        card.querySelector(".card-subject-schedule").innerHTML = courseClasses[subject.code][Object.keys(courseClasses[subject.code])[1]].schedule
+    } else{
+        card.querySelector(".card-subject-schedule").innerHTML = ""
+    }
 
 
     card.classList.add("card")
     card.classList.add("subject")
-    card.classList.add("unfinished")
+    //////////////////////////////////////////
+    if(finishedSubjects.includes(subject.code)){
+        card.classList.add("finished")
+    } else{
+        card.classList.add("unfinished")
+    }
+    
+    
     card.classList.add("locked")
     card.classList.remove("template");
     card.dataset.semester = semester
@@ -148,16 +213,19 @@ function hidePrerequisites(code){
     }
 }
 
+
 function cellClick(element){
     const code = element.id
     if(finishedSubjects.includes(code)){
         element.classList.add('unfinished')
         element.classList.remove('finished')
         finishedSubjects.splice(finishedSubjects.indexOf(code),1);
+        localStorage.setItem('finishedSubjects', JSON.stringify(finishedSubjects));
     }else{
         element.classList.remove('unfinished')
         element.classList.add('finished')
         finishedSubjects.push(code);
+        localStorage.setItem('finishedSubjects', JSON.stringify(finishedSubjects));
     }
     checkAvailables();
 }
@@ -167,7 +235,7 @@ function checkAvailables() {
     availableSubjects = [];
     subjects.forEach(function(subject){
         let flag = true
-        if(!finishedSubjects.includes(subject.code)){
+        //if(!finishedSubjects.includes(subject.code)){
             subject.prerequisites.forEach(function(prerequisite){
                 if(!finishedSubjects.includes(prerequisite)){
                     flag = false
@@ -183,9 +251,9 @@ function checkAvailables() {
                 card.classList.add("locked")
                 card.classList.remove("unlocked")
             }
-        }
+        //}
     })
-    console.log(availableSubjects)   
+    //console.log(availableSubjects)   
 }
 
 
@@ -252,7 +320,7 @@ function checkSchedule(){
     }
     
     var flag;
-    console.log(availableSubjects);
+    //console.log(availableSubjects);
     for (var i = 0; i < cursos[0].disciplinas.length; i++) {
         flag = true;
         for (var j = 0; j < availableSubjects.length; j++) {
@@ -306,15 +374,19 @@ function setDragAndDrop(){
         draggable.addEventListener('dragstart', () => {
             draggable.classList.add('dragging')
             const semesterNumber = draggable.dataset.semester
-            console.log(semesters[semesterNumber-1])
-            semesters[semesterNumber-1].splice(semesters[draggable.dataset.semester-1].indexOf(draggable.id),1)
+            //console.log(semesters[semesterNumber-1])
+            //semesters[semesterNumber-1].splice(semesters[draggable.dataset.semester-1].indexOf(draggable.id),1)
+            semestersList[semesterNumber].splice(semestersList[draggable.dataset.semester].indexOf(draggable.id),1)
+            localStorage.setItem('semestersList', JSON.stringify(semestersList));
         })
 
         draggable.addEventListener('dragend', () =>{
             draggable.classList.remove('dragging')
             const semesterNumber = draggable.dataset.semester
-            semesters[semesterNumber-1].push(draggable.id)
-            console.log(semesters)
+            //semesters[semesterNumber-1].push(draggable.id)
+            semestersList[semesterNumber].push(draggable.id)
+            localStorage.setItem('semestersList', JSON.stringify(semestersList));
+            console.log(semestersList)
         })
     })
 
