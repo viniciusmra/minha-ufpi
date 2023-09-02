@@ -19,7 +19,12 @@ var availableSubjectsSchedule = [];
 window.onload = load;
 
 function load() {
-    finishedSubjects = JSON.parse(localStorage.getItem('finishedSubjects'));
+    LocalStoarefinishedSubjects = JSON.parse(localStorage.getItem('finishedSubjects'));
+    if(LocalStoarefinishedSubjects != null){
+        finishedSubjects = LocalStoarefinishedSubjects
+        console.log("LocalStoarefinishedSubjects Recuperado");
+    }
+    
     LocalStoareSemestersList = JSON.parse(localStorage.getItem('semestersList'));
     if(LocalStoareSemestersList != null){
         semestersList = LocalStoareSemestersList
